@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Entypo } from "@expo/vector-icons";
+import {
+  Button,
+  Dimensions,
+  Image,
+  Modal,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import axios from "axios";
+const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [id, setId] = useState("not yet scanned");
   const [data, setData] = useState();
+  const [id, setId] = useState("not yet scanned");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const askForPermission = () => {
     (async () => {
@@ -19,31 +32,33 @@ export default function App() {
     askForPermission();
   }, []);
 
-  const handleBarCodeScanned = async ({ type, id }) => {
-    setScanned(true);
+  const handleBarCodeScanned = async ({ data, type }) => {
     setId(data);
-    console.log("data and type =====>", id + " " + type);
-
+    console.log("id  =====>", data + "and type ====> " + type);
+    setScanned(true);
     try {
-      const response = await axios.get(`http://localhost:3000/products/${id}`);
-      console.log("=====> apres scan back", response.data);
+      const response = await axios.get(
+        `https://world.openfoodfacts.org/api/v0/product/${data}.json`
+      );
+      // console.log("=====> apres scan back", response.data);
       setData(response.data);
-      console.log(data);
+      console.log("marque ====>", data.brands_tags[0]);
     } catch (error) {
-      console.log(error.message);
+      console.log("error req scan", error.message);
     }
+    setModalOpen(true);
   };
 
   if (hasPermission === null) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text>Requesting for camera permission</Text>
-      </View>
+      </SafeAreaView>
     );
   }
   if (hasPermission === false) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text>No access for camera</Text>
         <Button
           title={"allow camera"}
@@ -51,38 +66,98 @@ export default function App() {
             askForPermission();
           }}
         ></Button>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.barcodebox}>
         <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          style={{ height: 600, width: 450 }}
+          style={{ height: 500, width: 400 }}
         />
+        {data && (
+          <Modal
+            transparent={true}
+            visible={modalOpen}
+            animationType="slide"
+            statusBarTranslucent={true}
+          >
+            <SafeAreaView style={styles.modalblock}>
+              <View style={styles.modalToggle}>
+                <Image
+                  style={styles.imgModal}
+                  source={{ uri: data.product.image_front_small_url }}
+                  resizeMode="cover"
+                ></Image>
+              </View>
+              <View style={styles.crossContain}>
+                <Entypo
+                  style={styles.cross}
+                  name="cross"
+                  size={24}
+                  color="black"
+                  onPress={() => {
+                    setModalOpen(false);
+                  }}
+                />
+              </View>
+              <View>
+                <View style={styles.infoContain}>
+                  <Text>{data.product.product_name_fr}</Text>
+                  <Text>{data.product.brands}</Text>
+                </View>
+                <View>
+                  <Text>Note</Text>
+                </View>
+              </View>
+            </SafeAreaView>
+          </Modal>
+        )}
       </View>
-      <Text>{data}</Text>
+
+      <Text> Product Id :{id}</Text>
       {scanned && (
         <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  crossContain: {
+    position: "absolute",
+    borderWidth: 2,
+    borderColor: "white",
+    justifyContent: "flex-end",
+    right: 5,
+    top: 5,
+  },
+  cross: {
+    justifyContent: "flex-end",
+  },
+  infoContain: {
+    height: 100,
+  },
+  modalblock: {
+    backgroundColor: "tomato",
+    marginTop: "135%",
+    flexDirection: "row",
+  },
+  imgModal: {
+    height: 150,
+    width: 200,
+  },
+
   container: {
-    flex: 1,
     backgroundColor: "white",
     alignItems: "center",
-    justifyContent: "center",
   },
   barcodebox: {
-    alignItems: "center",
     justifyContent: "center",
-    height: 600,
-    width: 300,
+    height: 500,
+    width: width,
     overflow: "hidden",
     backgroundColor: "tomato",
   },
