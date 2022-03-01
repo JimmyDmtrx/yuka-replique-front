@@ -45,7 +45,7 @@ export default function App() {
       );
       // console.log("=====> apres scan back", response.data);
       setData(response.data);
-      console.log("marque ====>", data.brands_tags[0]);
+      // console.log("marque ====>", data.brands_tags[0]);
     } catch (error) {
       console.log("error req scan", error.message);
     }
@@ -91,7 +91,7 @@ export default function App() {
               <View style={styles.modalToggle}>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate("Produit");
+                    navigation.navigate("Produit", { id: id });
                   }}
                 >
                   <Image

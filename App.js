@@ -18,27 +18,28 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        tabBarOptions={{
-          activeTintColor: "orange",
-          inactiveTintColor: "gray",
-          // labelPosition: "below-icon",
-        }}
-      >
-        <Tab.Screen name="Camera" component={CameraScreen} />
-        <Tab.Screen name="Produits" component={ProductsScreen} />
-        {() => (
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Produit"
-              component={ProductScreen}
-            ></Stack.Screen>
-          </Stack.Navigator>
-        )}
-
-        <Tab.Screen name="Favoris" component={FavoritesScreen} />
-        <Tab.Screen name="Recherche" component={SearchScreen} />
-      </Tab.Navigator>
+      <Stack.Navigator>
+        <Stack.Screen name="Tab" options={{ headerShown: false }}>
+          {() => (
+            <Tab.Navigator
+              tabBarOptions={{
+                activeTintColor: "orange",
+                inactiveTintColor: "gray",
+                // labelPosition: "below-icon",
+              }}
+            >
+              <Tab.Screen name="Camera" component={CameraScreen} />
+              <Stack.Screen
+                name="Produit"
+                component={ProductScreen}
+              ></Stack.Screen>
+              <Tab.Screen name="Produits" component={ProductsScreen} />
+              <Tab.Screen name="Favoris" component={FavoritesScreen} />
+              <Tab.Screen name="Recherche" component={SearchScreen} />
+            </Tab.Navigator>
+          )}
+        </Stack.Screen>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
