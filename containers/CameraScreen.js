@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Entypo } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/core";
 import {
   Button,
   Dimensions,
   Image,
   Modal,
+  TouchableOpacity,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -16,6 +18,7 @@ const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 
 export default function App() {
+  const navigation = useNavigation();
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [data, setData] = useState();
@@ -86,11 +89,17 @@ export default function App() {
           >
             <SafeAreaView style={styles.modalblock}>
               <View style={styles.modalToggle}>
-                <Image
-                  style={styles.imgModal}
-                  source={{ uri: data.product.image_front_small_url }}
-                  resizeMode="cover"
-                ></Image>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Produit");
+                  }}
+                >
+                  <Image
+                    style={styles.imgModal}
+                    source={{ uri: data.product.image_front_small_url }}
+                    resizeMode="cover"
+                  ></Image>
+                </TouchableOpacity>
               </View>
               <View style={styles.crossContain}>
                 <Entypo
