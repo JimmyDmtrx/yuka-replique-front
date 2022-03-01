@@ -1,11 +1,20 @@
-import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useRoute } from "@react-navigation/core";
 import { useState, useEffect } from "react";
 import axios from "axios";
 // import { ActivityIndicator } from "react-native-web";
+const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height;
 
 export default function ProductScreen() {
-  const [data, setData] = useState();
+  const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { params } = useRoute();
   const id = params.id;
@@ -34,18 +43,50 @@ export default function ProductScreen() {
   ) : (
     <SafeAreaView style={styles.container}>
       <View>
-        <Text>productsreen</Text>
-        <Image
-          source={{ uri: data.product.image_front_small_url }}
-          resizeMode="cover"
-        ></Image>
+        <View>
+          <Image
+            style={styles.imgProduit}
+            source={{ uri: data.product.image_front_small_url }}
+            resizeMode="cover"
+          ></Image>
+        </View>
+        <View>
+          <Text>{data.product.product_name_fr}</Text>
+          <Text>{data.product.brands}</Text>
+        </View>
+      </View>
+      <View>
+        <Text>titre "pour 100g"</Text>
+        <View>
+          <Text>Bio</Text>
+        </View>
+        <View>
+          <Text>Protéïnes</Text>
+        </View>
+        <View>
+          <Text>Fibre</Text>
+        </View>
+        <View>
+          <Text>calories</Text>
+        </View>
+        <View>
+          <Text>Graisses saturée</Text>
+        </View>
+        <View>
+          <Text>Sucres</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
+  imgProduit: {
+    width: 200,
+    height: 200,
+  },
   container: {
     backgroundColor: "white",
-    alignItems: "center",
+    width: width,
+    height: height,
   },
 });
