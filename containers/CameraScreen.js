@@ -25,6 +25,7 @@ export default function App() {
   const [data, setData] = useState();
   const [id, setId] = useState("not yet scanned");
   const [modalOpen, setModalOpen] = useState(false);
+  const tabProduct = [];
 
   const handleGoBack = () => {
     setModalOpen(false);
@@ -51,16 +52,26 @@ export default function App() {
       );
       // console.log("=====> apres scan back", response.data);
       setData(response.data);
-      const setProductId = async (infos) => {
+
+      const setProductInfos = async (infos) => {
         try {
           await AsyncStorage.setItem("product", infos);
         } catch (error) {
           console.log(error);
         }
       };
-      setProductId(response.data);
-      const value = await AsyncStorage.getItem("product");
-      console.log(value);
+
+      const infosValue = JSON.stringify({
+        id: response.data.code,
+        picture: response.data.product.image_front_small_url,
+        name: response.data.product.product_name_fr,
+        brand: response.data.product.brands,
+      });
+
+      setProductInfos(infosValue);
+
+      // const result = await AsyncStorage.getItem("product");
+      // console.log(result);
       // console.log("marque ====>", data.brands_tags[0]);
     } catch (error) {
       console.log("error req scan", error.message);
