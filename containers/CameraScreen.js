@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 import {
@@ -25,6 +26,11 @@ export default function App() {
   const [id, setId] = useState("not yet scanned");
   const [modalOpen, setModalOpen] = useState(false);
 
+  const handleGoBack = () => {
+    setModalOpen(false);
+    setScanned(false);
+  };
+
   const askForPermission = () => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -45,13 +51,16 @@ export default function App() {
       );
       // console.log("=====> apres scan back", response.data);
       setData(response.data);
-      const setProductId = async (id) => {
+      const setProductId = async (infos) => {
         try {
-          id && (await AsyncStorage.setItem("productId", id));
+          await AsyncStorage.setItem("product", infos);
         } catch (error) {
           console.log(error);
         }
       };
+      setProductId(response.data);
+      const value = await AsyncStorage.getItem("product");
+      console.log(value);
       // console.log("marque ====>", data.brands_tags[0]);
     } catch (error) {
       console.log("error req scan", error.message);
@@ -99,7 +108,7 @@ export default function App() {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("Produit", { id: id });
-                    setScanned(false);
+                    setModalOpen(false);
                   }}
                 >
                   <Image
@@ -115,9 +124,7 @@ export default function App() {
                   name="cross"
                   size={24}
                   color="black"
-                  onPress={() => {
-                    setModalOpen(false);
-                  }}
+                  onPress={handleGoBack}
                 />
               </View>
               <View>
@@ -135,9 +142,9 @@ export default function App() {
       </View>
 
       <Text> Product Id :{id}</Text>
-      {scanned && (
+      {/* {scanned && (
         <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
-      )}
+      )} */}
     </SafeAreaView>
   );
 }
