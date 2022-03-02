@@ -25,7 +25,6 @@ export default function App() {
   const [data, setData] = useState();
   const [id, setId] = useState("not yet scanned");
   const [modalOpen, setModalOpen] = useState(false);
-  const tabProduct = [];
 
   const handleGoBack = () => {
     setModalOpen(false);
@@ -53,14 +52,13 @@ export default function App() {
       // console.log("=====> apres scan back", response.data);
       setData(response.data);
 
-      const setProductInfos = async (infos) => {
-        try {
-          await AsyncStorage.setItem("product", infos);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
+      // const setProductInfos = async (infos) => {
+      //   try {
+      //     await AsyncStorage.setItem("product", infos);
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // };
       const infosValue = JSON.stringify({
         id: response.data.code,
         picture: response.data.product.image_front_small_url,
@@ -68,7 +66,24 @@ export default function App() {
         brand: response.data.product.brands,
       });
 
-      setProductInfos(infosValue);
+      await AsyncStorage.setItem("product", infosValue);
+
+      const isHistoryExist = AsyncStorage.getItem("product");
+
+      if (isHistoryExist === null) {
+        const tabProduct = [];
+        tabProduct.push(infosValue);
+        console.log(
+          "Je vais devoir créer un tableau et push mon premier objet à l'intétieur"
+        );
+      } else {
+        tabProduct.unshift(infosValue);
+        console.log("J'ai déjà au moins un produit dans l'historique");
+        console.log("tab ===>", tabProduct);
+        // console.log(infosValue);
+      }
+
+      // setProductInfos(infosValue);
 
       // const result = await AsyncStorage.getItem("product");
       // console.log(result);
@@ -153,9 +168,9 @@ export default function App() {
       </View>
 
       <Text> Product Id :{id}</Text>
-      {/* {scanned && (
+      {scanned && (
         <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
-      )} */}
+      )}
     </SafeAreaView>
   );
 }
