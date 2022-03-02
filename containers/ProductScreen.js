@@ -31,10 +31,10 @@ export default function ProductScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const { params } = useRoute();
   const id = params.id;
-
-  console.log("params ======>", params);
-  console.log("id produit ======>", id);
-
+  // const keywords = data.product._keywords;
+  // console.log("params ======>", params);
+  // console.log("id produit ======>", id);
+  // console.log("tab--------", keywords);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,7 +42,9 @@ export default function ProductScreen() {
           `https://world.openfoodfacts.org/api/v0/product/${id}.json`
         );
         setData(response.data);
-        console.log("response.data ===>", data);
+
+        // console.log("response.data ===>", data);
+        // console.log(keywords);
       } catch (error) {
         console.log(error);
       }
@@ -76,13 +78,11 @@ export default function ProductScreen() {
           <View style={styles.nutriDiv}>
             <Entypo name="leaf" size={24} color="black" />
             <Text>Bio</Text>
-            <FlatList
-              bioLabel={data.products._keywords}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => {
-                return <Text>{item}</Text>;
-              }}
-            />
+            {data.product._keywords.includes("biologique" || "organic") ? (
+              <Text>produit naturel</Text>
+            ) : (
+              <Text>Produit non naturel</Text>
+            )}
           </View>
           <View style={styles.nutriDiv}>
             <FontAwesome5 name="fish" size={24} color="black" />
@@ -112,7 +112,6 @@ export default function ProductScreen() {
           </View>
         </View>
       </ScrollView>
-
       <StatusBar style="light" />
     </SafeAreaView>
   );
@@ -130,6 +129,7 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
   },
   nutriDiv: {
+    height: 120,
     flexDirection: "row",
   },
 });

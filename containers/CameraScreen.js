@@ -37,7 +37,7 @@ export default function App() {
 
   const handleBarCodeScanned = async ({ data, type }) => {
     setId(data);
-    console.log("id  =====>", data + "and type ====> " + type);
+    // console.log("id  =====>", data + "and type ====> " + type);
     setScanned(true);
     try {
       const response = await axios.get(
@@ -45,6 +45,13 @@ export default function App() {
       );
       // console.log("=====> apres scan back", response.data);
       setData(response.data);
+      const setProductId = async (id) => {
+        try {
+          id && (await AsyncStorage.setItem("productId", id));
+        } catch (error) {
+          console.log(error);
+        }
+      };
       // console.log("marque ====>", data.brands_tags[0]);
     } catch (error) {
       console.log("error req scan", error.message);
@@ -92,6 +99,7 @@ export default function App() {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("Produit", { id: id });
+                    setScanned(false);
                   }}
                 >
                   <Image

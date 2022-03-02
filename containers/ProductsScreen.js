@@ -8,9 +8,10 @@ export default function ProductsScreen() {
   const [data, setData] = useState();
 
   useEffect(() => {
-    console.log();
     const fetchData = async () => {
-      const response = await axios.get("http://localhost:3000/products");
+      const response = await axios.get(
+        `https://world.openfoodfacts.org/api/v0/product/${data}.json`
+      );
       // console.log(response.data);
       setData(response.data);
       setIsLoading(false);
@@ -18,8 +19,22 @@ export default function ProductsScreen() {
 
     fetchData();
   }, []);
+  _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("productId");
+      if (value !== null) {
+        console.log(value);
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
 
-  return (
+  return isLoading ? (
+    <View>
+      <Text>En chargement</Text>
+    </View>
+  ) : (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>ProductsScreen</Text>
     </View>
