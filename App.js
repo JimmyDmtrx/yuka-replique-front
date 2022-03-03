@@ -18,15 +18,15 @@ export default function App() {
 
   return (
     <NavigationContainer>
+      {/* <Stack.Screen name="Product" component={ProductScreen}></Stack.Screen> */}
       <Stack.Navigator>
-        {(props) => (
+        {/* {(props) => (
           <Stack.Navigator>
             <Stack.Screen name="Product">
               {() => <ProductScreen {...props} />}
             </Stack.Screen>
           </Stack.Navigator>
-        )}
-        {/* <Stack.Screen name="Product" component={ProductScreen}></Stack.Screen> */}
+        )} */}
         <Stack.Screen name="Tab" options={{ headerShown: false }}>
           {() => (
             <Tab.Navigator
@@ -48,6 +48,9 @@ export default function App() {
                     <Stack.Screen name="Camera">
                       {() => <CameraScreen {...props} />}
                     </Stack.Screen>
+                    <Stack.Screen name="Product">
+                      {() => <ProductScreen {...props} />}
+                    </Stack.Screen>
                   </Stack.Navigator>
                 )}
               </Tab.Screen>
@@ -60,11 +63,10 @@ export default function App() {
               >
                 {() => (
                   <Stack.Navigator>
-                    <Stack.Screen name="Products" component={ProductsScreen}>
-                      {/* {() => <ProductsScreen />} */}
-                    </Stack.Screen>
-                    {/* {() => <ProductScreen />} */}
-                    {/* </Stack.Screen> */}
+                    <Stack.Screen
+                      name="Products"
+                      component={ProductsScreen}
+                    ></Stack.Screen>
                   </Stack.Navigator>
                 )}
               </Tab.Screen>

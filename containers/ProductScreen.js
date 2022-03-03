@@ -26,7 +26,7 @@ import {
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 
-export default function ProductScreen() {
+export default function ProductScreen(props) {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { params } = useRoute();
@@ -43,7 +43,7 @@ export default function ProductScreen() {
         );
         setData(response.data);
 
-        // console.log("response.data ===>", data);
+        console.log("response.data ===>", data);
         // console.log(keywords);
       } catch (error) {
         console.log(error);
