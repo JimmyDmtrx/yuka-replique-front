@@ -33,7 +33,7 @@ export default function ProductScreen() {
   const id = params.id;
   // const keywords = data.product._keywords;
   // console.log("params ======>", params);
-  // console.log("id produit ======>", id);
+  console.log("id produit ======>", id);
   // console.log("tab--------", keywords);
   useEffect(() => {
     const fetchData = async () => {
@@ -62,11 +62,13 @@ export default function ProductScreen() {
       <ScrollView>
         <View style={styles.modal}>
           <View>
-            <Image
-              source={{ uri: data.product.image_front_thumb_url }}
-              style={styles.imgProduit}
-              resizeMode="cover"
-            ></Image>
+            {data.product && (
+              <Image
+                source={{ uri: data.product.image_front_thumb_url }}
+                style={styles.imgProduit}
+                resizeMode="cover"
+              ></Image>
+            )}
           </View>
           <View>
             <Text>{data.product.product_name_fr}</Text>

@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import axios from "axios";
+
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 
@@ -59,28 +60,30 @@ export default function App() {
       //     console.log(error);
       //   }
       // };
-      const infosValue = JSON.stringify({
-        id: response.data.code,
-        picture: response.data.product.image_front_small_url,
-        name: response.data.product.product_name_fr,
-        brand: response.data.product.brands,
-      });
+      // const infosValue = JSON.stringify({
+      //   id: response.data.code,
+      //   picture: response.data.product.image_front_small_url,
+      //   name: response.data.product.product_name_fr,
+      //   brand: response.data.product.brands,
+      // });
 
-      await AsyncStorage.setItem("product", infosValue);
+      // await AsyncStorage.setItem("product", infosValue);
 
-      const isHistoryExist = AsyncStorage.getItem("product");
+      const isHistoryExist = await AsyncStorage.getItem("products");
 
       if (isHistoryExist === null) {
         const tabProduct = [];
-        tabProduct.push(infosValue);
+        tabProduct.push({ id: response.data.code });
         console.log(
           "Je vais devoir créer un tableau et push mon premier objet à l'intétieur"
         );
+        await AsyncStorage.setItem("products", JSON.stringify(tabProduct));
       } else {
-        tabProduct.unshift(infosValue);
+        // tabProduct.unshift(infosValue);
         console.log("J'ai déjà au moins un produit dans l'historique");
-        console.log("tab ===>", tabProduct);
-        // console.log(infosValue);
+
+        const myHistoryInJson = JSON.parse(isHistoryExist);
+        console.log(myHistoryInJson);
       }
 
       // setProductInfos(infosValue);
@@ -133,15 +136,22 @@ export default function App() {
               <View style={styles.modalToggle}>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate("Produit", { id: id });
+                    // navigation.navigate("Produit", { id: id });
+                    navigation.navigate(
+                      "Product",
+                      { screen: "ProductScreen" },
+                      { id: id }
+                    );
                     setModalOpen(false);
                   }}
                 >
-                  <Image
-                    style={styles.imgModal}
-                    source={{ uri: data.product.image_front_small_url }}
-                    resizeMode="cover"
-                  ></Image>
+                  {data.product && (
+                    <Image
+                      style={styles.imgModal}
+                      source={{ uri: data.product.image_front_small_url }}
+                      resizeMode="cover"
+                    ></Image>
+                  )}
                 </TouchableOpacity>
               </View>
               <View style={styles.crossContain}>

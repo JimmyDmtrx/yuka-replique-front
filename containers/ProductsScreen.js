@@ -10,7 +10,7 @@ export default function ProductsScreen() {
   useEffect(() => {
     const getInfos = async () => {
       // console.log("test");
-      const infosValue = await AsyncStorage.getItem("product");
+      const infosValue = await AsyncStorage.getItem("products");
 
       // console.log(infosValue);
       const product = JSON.parse(infosValue);
