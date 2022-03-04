@@ -53,44 +53,54 @@ export default function App() {
       // console.log("=====> apres scan back", response.data);
       setData(response.data);
 
-      // const setProductInfos = async (infos) => {
-      //   try {
-      //     await AsyncStorage.setItem("product", infos);
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // };
-      // const infosValue = JSON.stringify({
-      //   id: response.data.code,
-      //   picture: response.data.product.image_front_small_url,
-      //   name: response.data.product.product_name_fr,
-      //   brand: response.data.product.brands,
-      // });
-
-      // await AsyncStorage.setItem("product", infosValue);
-
       const isHistoryExist = await AsyncStorage.getItem("products");
 
       if (isHistoryExist === null) {
         const tabProduct = [];
-        tabProduct.push({ id: response.data.code });
-        console.log(
-          "Je vais devoir créer un tableau et push mon premier objet à l'intétieur"
-        );
-        await AsyncStorage.setItem("products", JSON.stringify(tabProduct));
+
+        tabProduct.push({
+          id: response.data.code,
+          name: response.data.product.product_name_fr,
+          picture: response.data.product.image_front_small_url,
+          brand: response.data.product.brands,
+        });
+
+        const stringifyTabProduct = JSON.stringify(tabProduct);
+
+        await AsyncStorage.setItem("products", stringifyTabProduct);
       } else {
-        // tabProduct.unshift(infosValue);
-        console.log("J'ai déjà au moins un produit dans l'historique");
+        // console.log("J'ai déjà au moins un produit dans l'historique");
+        const callHistory = await AsyncStorage.getItem("products");
 
-        const myHistoryInJson = JSON.parse(isHistoryExist);
-        console.log(myHistoryInJson);
+        const myHistoryInJson = JSON.parse(callHistory);
+
+        const idFound = myHistoryInJson.find((product) => {
+          // console.log("product", product);
+
+          if (response.data.product.code === product.id) {
+            console.log("already here");
+            return true;
+          } else {
+            console.log("new entry");
+            return false;
+          }
+        });
+        // console.log("idFound", idFound);
+
+        if (idFound) {
+          console.log("product already in history");
+        } else {
+          const historyTab = JSON.parse(isHistoryExist);
+          historyTab.unshift({
+            id: response.data.code,
+            name: response.data.product.product_name_fr,
+            picture: response.data.product.image_front_small_url,
+            brand: response.data.product.brands,
+          });
+          const stringTabHistory = JSON.stringify(historyTab);
+          await AsyncStorage.setItem("products", stringTabHistory);
+        }
       }
-
-      // setProductInfos(infosValue);
-
-      // const result = await AsyncStorage.getItem("product");
-      // console.log(result);
-      // console.log("marque ====>", data.brands_tags[0]);
     } catch (error) {
       console.log("error req scan", error.message);
     }
@@ -139,7 +149,7 @@ export default function App() {
                     // navigation.navigate("Produit", { id: id });
                     navigation.navigate(
                       "Product",
-                      { screen: "ProductScreen" },
+                      // { screen: "ProductScreen" },
                       { id: id }
                     );
                     setModalOpen(false);
@@ -176,7 +186,13 @@ export default function App() {
           </Modal>
         )}
       </View>
-
+      <Button
+        title="remove"
+        onPress={async () => {
+          await AsyncStorage.removeItem("products");
+          console.log("removed");
+        }}
+      />
       <Text> Product Id :{id}</Text>
       {scanned && (
         <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />

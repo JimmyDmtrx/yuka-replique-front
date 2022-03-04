@@ -26,14 +26,14 @@ import {
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 
-export default function ProductScreen(props) {
+export default function ProductScreen() {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { params } = useRoute();
   const id = params.id;
   // const keywords = data.product._keywords;
   // console.log("params ======>", params);
-  console.log("id produit ======>", id);
+  // console.log("id produit ======>", id);
   // console.log("tab--------", keywords);
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +43,7 @@ export default function ProductScreen(props) {
         );
         setData(response.data);
 
-        console.log("response.data ===>", data);
+        // console.log("response.data ===>", data);
         // console.log(keywords);
       } catch (error) {
         console.log(error);
@@ -119,7 +119,7 @@ export default function ProductScreen(props) {
   );
 }
 const styles = StyleSheet.create({
-  modal: { backgroundColor: "tomato", flexDirection: "row" },
+  modal: { backgroundColor: "white", flexDirection: "row" },
   imgProduit: {
     width: 200,
     height: 200,
