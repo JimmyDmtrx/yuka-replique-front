@@ -18,7 +18,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Entypo,
   FontAwesome5,
-  MaterialCommunityIcons,
   Fontisto,
   SimpleLineIcons,
 } from "@expo/vector-icons";
@@ -122,20 +121,24 @@ export default function ProductScreen() {
             )}
           </View>
           <View>
-            <Text>{data.product.product_name_fr}</Text>
-            <Text>{data.product.brands}</Text>
+            <Text style={styles.titre}>{data.product.product_name_fr}</Text>
+            <Text style={styles.sousTitre}>{data.product.brands}</Text>
             <TouchableOpacity onPress={addToFavorites}>
               <Text>add to favorites</Text>
             </TouchableOpacity>
           </View>
         </View>
         <View>
-          <Text>titre "pour 100g"</Text>
+          <View style={styles.valeur}>
+            <Text style={styles.titre}>Valeur </Text>
+            <Text style={styles.sousTitre}>pour 100g</Text>
+          </View>
+
           <View style={styles.nutriDiv}>
             <View style={styles.iconeProduct}>
               <Entypo name="leaf" size={40} color="darkgrey" />
             </View>
-            <View>
+            <View style={styles.nutriInfo}>
               <Text>Bio</Text>
               {data.product._keywords.includes("biologique" || "organic") ? (
                 <Text>produit naturel</Text>
@@ -149,42 +152,61 @@ export default function ProductScreen() {
               <View style={styles.iconeProduct}>
                 <FontAwesome5 name="fish" size={30} color="darkgrey" />
               </View>
-              <View>
-                <Text>Protéïnes {data.product.nutriscore_data.proteins}</Text>
+              <View style={styles.nutriInfo}>
+                <Text>Protéïnes </Text>
+                <Text>{data.product.nutriscore_data.proteins}</Text>
               </View>
             </View>
           ) : (
-            <Text>No data</Text>
+            <View style={styles.nutriDiv}>
+              <View style={styles.iconeProduct}>
+                <FontAwesome5 name="fish" size={30} color="darkgrey" />
+              </View>
+              <View style={styles.nutriInfo}>
+                <Text>Fibre </Text>
+                <Text>No data</Text>
+              </View>
+            </View>
           )}
           {data.product.nutriscore_data?.fiber ? (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <MaterialCommunityIcons
-                  name="dots-vertical"
-                  size={30}
-                  color="darkgrey"
-                />
+                <Entypo name="air" size={30} color="darkgrey" />
               </View>
-              <View>
-                <Text>Fibre {data.product.nutriscore_data.fiber}</Text>
+              <View style={styles.nutriInfo}>
+                <Text>Fibre </Text>
+                <Text>{data.product.nutriscore_data.fiber}</Text>
               </View>
             </View>
           ) : (
-            <Text>No data</Text>
+            <View style={styles.nutriDiv}>
+              <View style={styles.iconeProduct}>
+                <Entypo name="air" size={30} color="darkgrey" />
+              </View>
+              <View style={styles.nutriInfo}>
+                <Text>Fibre </Text>
+                <Text>No data</Text>
+              </View>
+            </View>
           )}
           {data.product.nutriscore_data?.energy ? (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
                 <SimpleLineIcons name="drop" size={30} color="darkgrey" />
               </View>
-              <View>
-                <Text>calories {data.product.nutriscore_data.energy}</Text>
+              <View style={styles.nutriInfo}>
+                <Text>calories </Text>
+                <Text>{data.product.nutriscore_data.energy}</Text>
               </View>
             </View>
           ) : (
             <View style={styles.nutriDiv}>
-              <SimpleLineIcons name="drop" size={30} color="darkgrey" />
-              <Text>no Data</Text>
+              <View style={styles.iconeProduct}>
+                <SimpleLineIcons name="drop" size={30} color="darkgrey" />
+              </View>
+              <View>
+                <Text>No data</Text>
+              </View>
             </View>
           )}
           {data.product.nutriscore_data?.saturated_fat ? (
@@ -193,9 +215,8 @@ export default function ProductScreen() {
                 <Fontisto name="blood-drop" size={30} color="darkgrey" />
               </View>
               <View style={styles.nutriInfo}>
-                <Text>
-                  Graisses saturée {data.product.nutriscore_data.saturated_fat}
-                </Text>
+                <Text>Graisses saturée</Text>
+                <Text>{data.product.nutriscore_data.saturated_fat}</Text>
               </View>
             </View>
           ) : (
@@ -213,8 +234,9 @@ export default function ProductScreen() {
               <View style={styles.iconeProduct}>
                 <FontAwesome5 name="candy-cane" size={30} color="darkgrey" />
               </View>
-              <View>
-                <Text>Sucres {data.product.nutriscore_data.sugars} </Text>
+              <View style={styles.nutriInfo}>
+                <Text>Sucres </Text>
+                <Text> {data.product.nutriscore_data.sugars}</Text>
               </View>
             </View>
           ) : (
@@ -230,9 +252,30 @@ export default function ProductScreen() {
   );
 }
 const styles = StyleSheet.create({
+  titre: {
+    color: "dimgray",
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  sousTitre: {
+    fontWeight: "700",
+    color: "darkgrey",
+  },
+  valeur: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: 320,
+    marginLeft: 20,
+    marginTop: 20,
+  },
   nutriInfo: {
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderBottomColor: "lightgrey",
+    width: "75%",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
   },
   iconeProduct: {
     height: 70,
@@ -244,10 +287,14 @@ const styles = StyleSheet.create({
     height: 70,
     flexDirection: "row",
   },
-  modal: { backgroundColor: "white", flexDirection: "row" },
+  modal: {
+    backgroundColor: "white",
+    flexDirection: "row",
+    margin: 10,
+  },
   imgProduit: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 100,
   },
   container: {
     backgroundColor: "white",
