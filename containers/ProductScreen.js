@@ -1,12 +1,12 @@
 import {
   Dimensions,
-  FlatList,
   Image,
   Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useRoute } from "@react-navigation/core";
@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Entypo,
   FontAwesome5,
@@ -52,6 +53,56 @@ export default function ProductScreen() {
     };
     fetchData();
   }, []);
+  const addToFavorites = async () => {
+    const isFavoritesExist = await AsyncStorage.getItem("favorites");
+
+    if (isFavoritesExist === null) {
+      const tabFavorites = [];
+
+      tabFavorites.push({
+        id: data.code,
+        name: data.product.product_name_fr,
+        picture: data.product.image_front_small_url,
+        brand: data.product.brands,
+      });
+
+      const stringifyTabFavorites = JSON.stringify(tabFavorites);
+
+      await AsyncStorage.setItem("favorites", stringifyTabFavorites);
+    } else {
+      console.log("J'ai déjà au moins un produit dans l'historique");
+      const callFavorites = await AsyncStorage.getItem("favorites");
+
+      const myFavoritesInJson = JSON.parse(callFavorites);
+
+      const idFound = myFavoritesInJson.find((favorite) => {
+        console.log("myFavoritesInJson", myFavoritesInJson);
+
+        if (data.product.code === favorite.id) {
+          console.log("already here");
+          return true;
+        } else {
+          console.log("new entry");
+          return false;
+        }
+      });
+      console.log("idFound", idFound);
+
+      if (idFound) {
+        console.log("product already in history");
+      } else {
+        const favTab = JSON.parse(isFavoritesExist);
+        favTab.unshift({
+          id: data.code,
+          name: data.product.product_name_fr,
+          picture: data.product.image_front_small_url,
+          brand: data.product.brands,
+        });
+        const stringFavTab = JSON.stringify(favTab);
+        await AsyncStorage.setItem("favorites", stringFavTab);
+      }
+    }
+  };
 
   return isLoading ? (
     <View>
@@ -66,52 +117,112 @@ export default function ProductScreen() {
               <Image
                 source={{ uri: data.product.image_front_thumb_url }}
                 style={styles.imgProduit}
-                resizeMode="cover"
+                resizeMode="contain"
               ></Image>
             )}
           </View>
           <View>
             <Text>{data.product.product_name_fr}</Text>
             <Text>{data.product.brands}</Text>
+            <TouchableOpacity onPress={addToFavorites}>
+              <Text>add to favorites</Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View>
           <Text>titre "pour 100g"</Text>
           <View style={styles.nutriDiv}>
-            <Entypo name="leaf" size={24} color="black" />
-            <Text>Bio</Text>
-            {data.product._keywords.includes("biologique" || "organic") ? (
-              <Text>produit naturel</Text>
-            ) : (
-              <Text>Produit non naturel</Text>
-            )}
+            <View style={styles.iconeProduct}>
+              <Entypo name="leaf" size={40} color="darkgrey" />
+            </View>
+            <View>
+              <Text>Bio</Text>
+              {data.product._keywords.includes("biologique" || "organic") ? (
+                <Text>produit naturel</Text>
+              ) : (
+                <Text>Produit non naturel</Text>
+              )}
+            </View>
           </View>
-          <View style={styles.nutriDiv}>
-            <FontAwesome5 name="fish" size={24} color="black" />
-            <Text>Protéïnes {data.product.nutriscore_data.proteins}</Text>
-          </View>
-          <View style={styles.nutriDiv}>
-            <MaterialCommunityIcons
-              name="dots-vertical"
-              size={24}
-              color="black"
-            />
-            <Text>Fibre {data.product.nutriscore_data.fiber}</Text>
-          </View>
-          <View style={styles.nutriDiv}>
-            <SimpleLineIcons name="drop" size={24} color="black" />
-            <Text>calories {data.product.nutriscore_data.energy}</Text>
-          </View>
-          <View style={styles.nutriDiv}>
-            <Fontisto name="blood-drop" size={24} color="black" />
-            <Text>
-              Graisses saturée {data.product.nutriscore_data.saturated_fat}
-            </Text>
-          </View>
-          <View style={styles.nutriDiv}>
-            <FontAwesome5 name="candy-cane" size={24} color="black" />
-            <Text>Sucres {data.product.nutriscore_data.sugars} </Text>
-          </View>
+          {data.product.nutriscore_data?.proteins ? (
+            <View style={styles.nutriDiv}>
+              <View style={styles.iconeProduct}>
+                <FontAwesome5 name="fish" size={30} color="darkgrey" />
+              </View>
+              <View>
+                <Text>Protéïnes {data.product.nutriscore_data.proteins}</Text>
+              </View>
+            </View>
+          ) : (
+            <Text>No data</Text>
+          )}
+          {data.product.nutriscore_data?.fiber ? (
+            <View style={styles.nutriDiv}>
+              <View style={styles.iconeProduct}>
+                <MaterialCommunityIcons
+                  name="dots-vertical"
+                  size={30}
+                  color="darkgrey"
+                />
+              </View>
+              <View>
+                <Text>Fibre {data.product.nutriscore_data.fiber}</Text>
+              </View>
+            </View>
+          ) : (
+            <Text>No data</Text>
+          )}
+          {data.product.nutriscore_data?.energy ? (
+            <View style={styles.nutriDiv}>
+              <View style={styles.iconeProduct}>
+                <SimpleLineIcons name="drop" size={30} color="darkgrey" />
+              </View>
+              <View>
+                <Text>calories {data.product.nutriscore_data.energy}</Text>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.nutriDiv}>
+              <SimpleLineIcons name="drop" size={30} color="darkgrey" />
+              <Text>no Data</Text>
+            </View>
+          )}
+          {data.product.nutriscore_data?.saturated_fat ? (
+            <View style={styles.nutriDiv}>
+              <View style={styles.iconeProduct}>
+                <Fontisto name="blood-drop" size={30} color="darkgrey" />
+              </View>
+              <View style={styles.nutriInfo}>
+                <Text>
+                  Graisses saturée {data.product.nutriscore_data.saturated_fat}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.nutriDiv}>
+              <View style={styles.iconeProduct}>
+                <Fontisto name="blood-drop" size={30} color="darkgrey" />
+              </View>
+              <View>
+                <Text>No data</Text>
+              </View>
+            </View>
+          )}
+          {data.product.nutriscore_data?.sugars ? (
+            <View style={styles.nutriDiv}>
+              <View style={styles.iconeProduct}>
+                <FontAwesome5 name="candy-cane" size={30} color="darkgrey" />
+              </View>
+              <View>
+                <Text>Sucres {data.product.nutriscore_data.sugars} </Text>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.nutriDiv}>
+              <FontAwesome5 name="candy-cane" size={30} color="darkgrey" />
+              <Text>No data</Text>
+            </View>
+          )}
         </View>
       </ScrollView>
       <StatusBar style="light" />
@@ -119,6 +230,20 @@ export default function ProductScreen() {
   );
 }
 const styles = StyleSheet.create({
+  nutriInfo: {
+    borderWidth: 1,
+    borderBottomColor: "lightgrey",
+  },
+  iconeProduct: {
+    height: 70,
+    width: 70,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nutriDiv: {
+    height: 70,
+    flexDirection: "row",
+  },
   modal: { backgroundColor: "white", flexDirection: "row" },
   imgProduit: {
     width: 200,
@@ -129,9 +254,5 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
     marginTop: Platform.OS === "android" ? Constants.statusBarHeight : 0,
-  },
-  nutriDiv: {
-    height: 120,
-    flexDirection: "row",
   },
 });

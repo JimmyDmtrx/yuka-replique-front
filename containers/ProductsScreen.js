@@ -4,13 +4,13 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableOpacity } from "react-native-web";
 
 // import { ActivityIndicator } from "react-native-web";
 
@@ -31,7 +31,7 @@ export default function ProductsScreen() {
     setIsLoading(false);
     getInfos();
   }, []);
-  console.log(infos);
+  // console.log(infos);
   return isLoading ? (
     <Text>en cours de chargement</Text>
   ) : (

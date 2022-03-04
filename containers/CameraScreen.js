@@ -133,7 +133,7 @@ export default function App() {
       <View style={styles.barcodebox}>
         <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          style={{ height: 500, width: 400 }}
+          style={{ height: height, width: width }}
         />
         {data && (
           <Modal
@@ -156,11 +156,13 @@ export default function App() {
                   }}
                 >
                   {data.product && (
-                    <Image
-                      style={styles.imgModal}
-                      source={{ uri: data.product.image_front_small_url }}
-                      resizeMode="cover"
-                    ></Image>
+                    <View>
+                      <Image
+                        style={styles.imgModal}
+                        source={{ uri: data.product.image_front_small_url }}
+                        resizeMode="cover"
+                      ></Image>
+                    </View>
                   )}
                 </TouchableOpacity>
               </View>
@@ -168,11 +170,12 @@ export default function App() {
                 <Entypo
                   style={styles.cross}
                   name="cross"
-                  size={24}
-                  color="black"
+                  size={30}
+                  color="grey"
                   onPress={handleGoBack}
                 />
               </View>
+
               <View>
                 <View style={styles.infoContain}>
                   <Text>{data.product.product_name_fr}</Text>
@@ -186,26 +189,16 @@ export default function App() {
           </Modal>
         )}
       </View>
-      <Button
-        title="remove"
-        onPress={async () => {
-          await AsyncStorage.removeItem("products");
-          console.log("removed");
-        }}
-      />
-      <Text> Product Id :{id}</Text>
-      {scanned && (
-        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
-      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  modalToggle: {
+    backgroundColor: "lightgray",
+  },
   crossContain: {
     position: "absolute",
-    borderWidth: 2,
-    borderColor: "white",
     justifyContent: "flex-end",
     right: 5,
     top: 5,
@@ -217,24 +210,27 @@ const styles = StyleSheet.create({
     height: 100,
   },
   modalblock: {
-    backgroundColor: "tomato",
-    marginTop: "135%",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    backgroundColor: "white",
+    position: "absolute",
+    bottom: 0,
     flexDirection: "row",
+    height: "30%",
+    borderRadius: 20,
+    width: "100%",
   },
   imgModal: {
-    height: 150,
-    width: 200,
+    height: 100,
+    width: 150,
   },
 
   container: {
     backgroundColor: "white",
-    alignItems: "center",
   },
   barcodebox: {
     justifyContent: "center",
-    height: 500,
+    height: "90%",
     width: width,
-    overflow: "hidden",
-    backgroundColor: "tomato",
   },
 });
