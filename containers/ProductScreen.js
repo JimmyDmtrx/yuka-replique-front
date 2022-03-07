@@ -23,6 +23,7 @@ import {
   SimpleLineIcons,
 } from "@expo/vector-icons";
 import NutriScoreCard from "../components/NutriScoreCard";
+import ValueCard from "../components/ValueCard";
 
 // import { ActivityIndicator } from "react-native-web";
 const width = Dimensions.get("window").width;
@@ -65,6 +66,7 @@ export default function ProductScreen() {
         name: data.product.product_name_fr,
         picture: data.product.image_front_small_url,
         brand: data.product.brands,
+        note: data.product.nutriscore_grade,
       });
 
       const stringifyTabFavorites = JSON.stringify(tabFavorites);
@@ -87,7 +89,7 @@ export default function ProductScreen() {
           return false;
         }
       });
-      console.log("idFound", idFound);
+      // console.log("idFound", idFound);
 
       if (idFound) {
         console.log("product already in history");
@@ -98,6 +100,7 @@ export default function ProductScreen() {
           name: data.product.product_name_fr,
           picture: data.product.image_front_small_url,
           brand: data.product.brands,
+          note: data.product.nutriscore_grade,
         });
         const stringFavTab = JSON.stringify(favTab);
         await AsyncStorage.setItem("favorites", stringFavTab);
@@ -112,23 +115,34 @@ export default function ProductScreen() {
   ) : (
     <SafeAreaView style={styles.container}>
       <ScrollView>
+        <View style={styles.topDiv}></View>
         <View style={styles.modal}>
-          <View>
+          <View style={styles.imgContainer}>
             {data.product && (
               <Image
-                source={{ uri: data.product.image_front_thumb_url }}
+                source={{ uri: data.product.image_front_small_url }}
                 style={styles.imgProduit}
                 resizeMode="contain"
               ></Image>
             )}
           </View>
-          <View style={styles.marginDiv}></View>
-          <View>
-            <Text style={styles.titre}>{data.product.product_name_fr}</Text>
-            <Text style={styles.sousTitre}>{data.product.brands}</Text>
-            <NutriScoreCard note={data.product.nutriscore_grade} />
+
+          <View style={styles.fiche}>
+            <View style={styles.marginDiv}></View>
+
+            <View style={styles.titreContain}>
+              <Text numberOfLines={1} style={styles.titre}>
+                {data.product.product_name_fr}
+              </Text>
+              <Text style={styles.sousTitre}>{data.product.brands}</Text>
+            </View>
+            <View style={styles.noteContainer}>
+              <NutriScoreCard note={data.product.nutriscore_grade} />
+            </View>
           </View>
         </View>
+        <View style={styles.botDiv}></View>
+
         <View>
           <View style={styles.valeur}>
             <Text style={styles.titre}>Valeur </Text>
@@ -149,22 +163,25 @@ export default function ProductScreen() {
             </View>
           </View>
           {data.product.nutriscore_data?.proteins ? (
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
-                <FontAwesome5 name="fish" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Protéïnes </Text>
-                <Text>{data.product.nutriscore_data.proteins} g</Text>
-              </View>
-            </View>
+            <ValueCard
+              type={data.product.nutriscore_data.proteins}
+              name={"Protéïnes"}
+            /> // <View style={styles.nutriDiv}>
           ) : (
+            //   <View style={styles.iconeProduct}>
+            //     <FontAwesome5 name="fish" size={30} color="#737373" />
+            //   </View>
+            //   <View style={styles.nutriInfo}>
+            //     <Text style={styles.categ}>Protéïnes </Text>
+            //     <Text>{data.product.nutriscore_data.proteins} g</Text>
+            //   </View>
+            // </View>
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
                 <FontAwesome5 name="fish" size={30} color="#737373" />
               </View>
               <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Fibre </Text>
+                <Text style={styles.categ}>Proteïnes </Text>
                 <Text>No data</Text>
               </View>
             </View>
@@ -197,7 +214,7 @@ export default function ProductScreen() {
               </View>
               <View style={styles.nutriInfo}>
                 <Text style={styles.categ}>Calories</Text>
-                <Text>{data.product.nutriments.energy_value} kcal</Text>
+                <Text>{data.product.nutriments.energy_serving} kcal</Text>
               </View>
             </View>
           ) : (
@@ -266,11 +283,16 @@ export default function ProductScreen() {
   );
 }
 const styles = StyleSheet.create({
-  categ: {
-    color: "darkgray",
-    fontSize: 15,
-    fontWeight: "bold",
+  botDiv: { height: 10, backgroundColor: "#e8e8e8" },
+  topDiv: { height: 15 },
+  imgContainer: { justifyContent: "center" },
+  noteContainer: {
+    position: "absolute",
+    right: 5,
+    bottom: 0,
   },
+
+  fiche: { flexDirection: "row", width: "60%" },
   addFavorites: {
     alignItems: "center",
     marginTop: 25,
@@ -296,6 +318,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 20,
   },
+  categ: {
+    color: "darkgray",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
   nutriInfo: {
     borderBottomWidth: 1,
     borderBottomColor: "lightgrey",
@@ -317,7 +344,12 @@ const styles = StyleSheet.create({
   modal: {
     backgroundColor: "white",
     flexDirection: "row",
-    margin: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
+    marginBottom: 5,
+    padding: 5,
+    height: 100,
   },
   imgProduit: {
     width: 150,

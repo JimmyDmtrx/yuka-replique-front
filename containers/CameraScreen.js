@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import axios from "axios";
+import NutriScoreCard from "../components/NutriScoreCard";
 
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
@@ -97,6 +98,7 @@ export default function App() {
             name: response.data.product.product_name_fr,
             picture: response.data.product.image_front_small_url,
             brand: response.data.product.brands,
+            note: response.data.product.nutriscore_grade,
           });
           const stringTabHistory = JSON.stringify(historyTab);
           await AsyncStorage.setItem("products", stringTabHistory);
@@ -144,7 +146,17 @@ export default function App() {
             statusBarTranslucent={true}
           >
             <SafeAreaView style={styles.modalblock}>
-              <View style={styles.modalToggle}>
+              <View style={styles.crossContain}>
+                <Entypo
+                  style={styles.cross}
+                  name="cross"
+                  size={30}
+                  color="grey"
+                  onPress={handleGoBack}
+                />
+              </View>
+
+              {/* <View style={styles.modalToggle}>
                 <TouchableOpacity
                   onPress={() => {
                     // navigation.navigate("Produit", { id: id });
@@ -179,13 +191,48 @@ export default function App() {
 
               <View>
                 <View style={styles.infoContain}>
-                  <Text>{data.product.product_name_fr}</Text>
-                  <Text>{data.product.brands}</Text>
+                  <Text style={styles.titre}>
+                    {data.product.product_name_fr}
+                  </Text>
+                  <Text style={styles.sousTitre}>{data.product.brands}</Text>
                 </View>
-                <View>
-                  <Text>Note</Text>
+                <View style={styles.noteContainer}>
+                  <NutriScoreCard note={data.product.nutriscore_grade} />
                 </View>
-              </View>
+              </View> */}
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Product", { id: id });
+                }}
+              >
+                <View style={styles.modal}>
+                  <View style={styles.imgContainer}>
+                    {data.product && (
+                      <Image
+                        source={{ uri: data.product.image_front_small_url }}
+                        style={styles.imgProduit}
+                        resizeMode="contain"
+                      ></Image>
+                    )}
+                  </View>
+
+                  <View style={styles.fiche}>
+                    <View style={styles.marginDiv}></View>
+
+                    <View style={styles.titreContain}>
+                      <Text numberOfLines={1} style={styles.titre}>
+                        {data.product.product_name_fr}
+                      </Text>
+                      <Text style={styles.sousTitre}>
+                        {data.product.brands}
+                      </Text>
+                    </View>
+                    <View style={styles.noteContainer}>
+                      <NutriScoreCard note={data.product.nutriscore_grade} />
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
             </SafeAreaView>
           </Modal>
         )}
@@ -195,9 +242,40 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  modalToggle: {
-    backgroundColor: "lightgray",
+  imgContainer: { justifyContent: "center" },
+  marginDiv: { width: 15 },
+  noteContainer: {
+    position: "absolute",
+    right: 5,
+    bottom: 0,
   },
+  fiche: { flexDirection: "row", width: "60%" },
+
+  titre: {
+    color: "dimgray",
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  sousTitre: {
+    fontWeight: "700",
+    color: "darkgrey",
+  },
+  modal: {
+    backgroundColor: "white",
+    flexDirection: "row",
+    marginLeft: 10,
+    marginRight: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgrey",
+    marginBottom: 5,
+    padding: 5,
+    height: 100,
+  },
+  imgProduit: {
+    width: 120,
+    height: 70,
+  },
+
   crossContain: {
     position: "absolute",
     justifyContent: "flex-end",
@@ -220,10 +298,6 @@ const styles = StyleSheet.create({
     height: "30%",
     borderRadius: 20,
     width: "100%",
-  },
-  imgModal: {
-    height: 100,
-    width: 150,
   },
 
   container: {

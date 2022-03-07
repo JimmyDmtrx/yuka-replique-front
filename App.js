@@ -1,4 +1,4 @@
-// import { StatusBar } from "expo-status-bar";
+import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 // import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
@@ -19,6 +19,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
+      <StatusBar></StatusBar>
       <Stack.Navigator>
         <Stack.Screen name="Tab" options={{ headerShown: false }}>
           {() => (
@@ -34,6 +35,7 @@ export default function App() {
                 name="TabCamera"
                 options={{
                   tabBarLabel: "Scanner",
+
                   tabBarIcon: () => (
                     <FontAwesome name="barcode" size={24} color="black" />
                   ),

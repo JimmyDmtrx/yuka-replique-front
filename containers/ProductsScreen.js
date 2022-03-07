@@ -39,11 +39,11 @@ export default function ProductsScreen() {
   return isLoading ? (
     <Text>en cours de chargement</Text>
   ) : (
-    <SafeAreaView>
+    <SafeAreaView style={styles.Container}>
       <FlatList
         data={infos}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           return (
             <View style={styles.flatList}>
               <TouchableOpacity
@@ -63,9 +63,13 @@ export default function ProductsScreen() {
                   </View>
                   <View style={styles.fiche}>
                     <View style={styles.marginDiv}></View>
-                    <View>
-                      <Text style={styles.titre}>{item.name}</Text>
+                    <View style={styles.titreContain}>
+                      <Text numberOfLines={1} style={styles.titre}>
+                        {item.name}
+                      </Text>
                       <Text style={styles.sousTitre}>{item.brand}</Text>
+                    </View>
+                    <View style={styles.noteContainer}>
                       <NutriScoreCard note={item.note} />
                     </View>
                   </View>
@@ -91,11 +95,16 @@ export default function ProductsScreen() {
   );
 }
 const styles = StyleSheet.create({
+  Container: { width: width },
   imgContainer: { justifyContent: "center" },
-
-  flatList: { width },
   marginDiv: { width: 15 },
-  fiche: { flexDirection: "row" },
+  noteContainer: {
+    position: "absolute",
+    right: 5,
+    bottom: 0,
+  },
+  fiche: { flexDirection: "row", width: "60%" },
+
   titre: {
     color: "dimgray",
     fontWeight: "bold",
