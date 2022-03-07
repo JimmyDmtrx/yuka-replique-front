@@ -63,6 +63,7 @@ export default function App() {
           name: response.data.product.product_name_fr,
           picture: response.data.product.image_front_small_url,
           brand: response.data.product.brands,
+          note: response.data.product.nutriscore_grade,
         });
 
         const stringifyTabProduct = JSON.stringify(tabProduct);

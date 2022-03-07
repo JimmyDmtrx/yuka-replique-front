@@ -16,11 +16,13 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  AntDesign,
   Entypo,
   FontAwesome5,
   Fontisto,
   SimpleLineIcons,
 } from "@expo/vector-icons";
+import NutriScoreCard from "../components/NutriScoreCard";
 
 // import { ActivityIndicator } from "react-native-web";
 const width = Dimensions.get("window").width;
@@ -120,12 +122,11 @@ export default function ProductScreen() {
               ></Image>
             )}
           </View>
+          <View style={styles.marginDiv}></View>
           <View>
             <Text style={styles.titre}>{data.product.product_name_fr}</Text>
             <Text style={styles.sousTitre}>{data.product.brands}</Text>
-            <TouchableOpacity onPress={addToFavorites}>
-              <Text>add to favorites</Text>
-            </TouchableOpacity>
+            <NutriScoreCard note={data.product.nutriscore_grade} />
           </View>
         </View>
         <View>
@@ -136,10 +137,10 @@ export default function ProductScreen() {
 
           <View style={styles.nutriDiv}>
             <View style={styles.iconeProduct}>
-              <Entypo name="leaf" size={40} color="darkgrey" />
+              <Entypo name="leaf" size={40} color="#737373" />
             </View>
             <View style={styles.nutriInfo}>
-              <Text>Bio</Text>
+              <Text style={styles.categ}>Bio</Text>
               {data.product._keywords.includes("biologique" || "organic") ? (
                 <Text>produit naturel</Text>
               ) : (
@@ -150,20 +151,20 @@ export default function ProductScreen() {
           {data.product.nutriscore_data?.proteins ? (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <FontAwesome5 name="fish" size={30} color="darkgrey" />
+                <FontAwesome5 name="fish" size={30} color="#737373" />
               </View>
               <View style={styles.nutriInfo}>
-                <Text>Protéïnes </Text>
-                <Text>{data.product.nutriscore_data.proteins}</Text>
+                <Text style={styles.categ}>Protéïnes </Text>
+                <Text>{data.product.nutriscore_data.proteins} g</Text>
               </View>
             </View>
           ) : (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <FontAwesome5 name="fish" size={30} color="darkgrey" />
+                <FontAwesome5 name="fish" size={30} color="#737373" />
               </View>
               <View style={styles.nutriInfo}>
-                <Text>Fibre </Text>
+                <Text style={styles.categ}>Fibre </Text>
                 <Text>No data</Text>
               </View>
             </View>
@@ -171,40 +172,41 @@ export default function ProductScreen() {
           {data.product.nutriscore_data?.fiber ? (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <Entypo name="air" size={30} color="darkgrey" />
+                <Entypo name="air" size={30} color="#737373" />
               </View>
               <View style={styles.nutriInfo}>
-                <Text>Fibre </Text>
-                <Text>{data.product.nutriscore_data.fiber}</Text>
+                <Text style={styles.categ}>Fibre </Text>
+                <Text>{data.product.nutriscore_data.fiber} g</Text>
               </View>
             </View>
           ) : (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <Entypo name="air" size={30} color="darkgrey" />
+                <Entypo name="air" size={30} color="#737373" />
               </View>
               <View style={styles.nutriInfo}>
-                <Text>Fibre </Text>
+                <Text style={styles.categ}>Fibre </Text>
                 <Text>No data</Text>
               </View>
             </View>
           )}
-          {data.product.nutriscore_data?.energy ? (
+          {data.product.nutriments?.energy_value ? (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <SimpleLineIcons name="drop" size={30} color="darkgrey" />
+                <SimpleLineIcons name="drop" size={30} color="#737373" />
               </View>
               <View style={styles.nutriInfo}>
-                <Text>calories </Text>
-                <Text>{data.product.nutriscore_data.energy}</Text>
+                <Text style={styles.categ}>Calories</Text>
+                <Text>{data.product.nutriments.energy_value} kcal</Text>
               </View>
             </View>
           ) : (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <SimpleLineIcons name="drop" size={30} color="darkgrey" />
+                <SimpleLineIcons name="drop" size={30} color="#737373" />
               </View>
-              <View>
+              <View style={styles.nutriInfo}>
+                <Text style={styles.categ}>Calories </Text>
                 <Text>No data</Text>
               </View>
             </View>
@@ -212,19 +214,20 @@ export default function ProductScreen() {
           {data.product.nutriscore_data?.saturated_fat ? (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <Fontisto name="blood-drop" size={30} color="darkgrey" />
+                <Fontisto name="blood-drop" size={30} color="#737373" />
               </View>
               <View style={styles.nutriInfo}>
-                <Text>Graisses saturée</Text>
-                <Text>{data.product.nutriscore_data.saturated_fat}</Text>
+                <Text style={styles.categ}>Graisses saturée</Text>
+                <Text>{data.product.nutriscore_data.saturated_fat} g</Text>
               </View>
             </View>
           ) : (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <Fontisto name="blood-drop" size={30} color="darkgrey" />
+                <Fontisto name="blood-drop" size={30} color="#737373" />
               </View>
-              <View>
+              <View style={styles.nutriInfo}>
+                <Text style={styles.categ}>Graisse saturée </Text>
                 <Text>No data</Text>
               </View>
             </View>
@@ -232,19 +235,30 @@ export default function ProductScreen() {
           {data.product.nutriscore_data?.sugars ? (
             <View style={styles.nutriDiv}>
               <View style={styles.iconeProduct}>
-                <FontAwesome5 name="candy-cane" size={30} color="darkgrey" />
+                <FontAwesome5 name="candy-cane" size={30} color="#737373" />
               </View>
               <View style={styles.nutriInfo}>
-                <Text>Sucres </Text>
-                <Text> {data.product.nutriscore_data.sugars}</Text>
+                <Text style={styles.categ}>Sucres </Text>
+                <Text> {data.product.nutriscore_data.sugars} g</Text>
               </View>
             </View>
           ) : (
             <View style={styles.nutriDiv}>
-              <FontAwesome5 name="candy-cane" size={30} color="darkgrey" />
-              <Text>No data</Text>
+              <View style={styles.iconeProduct}>
+                <FontAwesome5 name="candy-cane" size={30} color="#737373" />
+              </View>
+              <View style={styles.nutriInfo}>
+                <Text style={styles.categ}>Sucres </Text>
+                <Text>No data</Text>
+              </View>
             </View>
           )}
+          <TouchableOpacity onPress={addToFavorites}>
+            <View style={styles.addFavorites}>
+              <AntDesign name="plussquare" size={24} color="#5DCC71" />
+              <Text style={styles.bouttonFav}> Add to favorites</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
       <StatusBar style="light" />
@@ -252,6 +266,18 @@ export default function ProductScreen() {
   );
 }
 const styles = StyleSheet.create({
+  categ: {
+    color: "darkgray",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  addFavorites: {
+    alignItems: "center",
+    marginTop: 25,
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  bouttonFav: { fontWeight: "bold", fontSize: 20, color: "#5DCC71" },
   titre: {
     color: "dimgray",
     fontWeight: "bold",
@@ -261,6 +287,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "darkgrey",
   },
+  marginDiv: { width: 15 },
   valeur: {
     flexDirection: "row",
     alignItems: "center",
@@ -284,7 +311,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   nutriDiv: {
-    height: 70,
+    height: 65,
     flexDirection: "row",
   },
   modal: {
