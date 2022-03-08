@@ -23,8 +23,12 @@ import {
   SimpleLineIcons,
 } from "@expo/vector-icons";
 import NutriScoreCard from "../components/NutriScoreCard";
-import ValueCard from "../components/ValueCard";
-
+import ProteinesValueCard from "../components/ProteinesValueCard";
+import NoValueCard from "../components/NoValueCard";
+import FatValueCard from "../components/FatValueCard";
+import FiberValueCard from "../components/FiberValueCard";
+import EnergyValueCard from "../components/EnergyValueCard";
+import SugarValueCard from "../components/SugarValueCard";
 // import { ActivityIndicator } from "react-native-web";
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
@@ -163,112 +167,58 @@ export default function ProductScreen() {
             </View>
           </View>
           {data.product.nutriscore_data?.proteins ? (
-            <ValueCard
+            <ProteinesValueCard
+              icone={<FontAwesome5 name="fish" size={30} color="#737373" />}
               type={data.product.nutriscore_data.proteins}
               name={"Protéïnes"}
-            /> // <View style={styles.nutriDiv}>
+              measure={"g"}
+            />
           ) : (
-            //   <View style={styles.iconeProduct}>
-            //     <FontAwesome5 name="fish" size={30} color="#737373" />
-            //   </View>
-            //   <View style={styles.nutriInfo}>
-            //     <Text style={styles.categ}>Protéïnes </Text>
-            //     <Text>{data.product.nutriscore_data.proteins} g</Text>
-            //   </View>
-            // </View>
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
-                <FontAwesome5 name="fish" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Proteïnes </Text>
-                <Text>No data</Text>
-              </View>
-            </View>
+            <NoValueCard name={"Protéïnes"} />
           )}
+
           {data.product.nutriscore_data?.fiber ? (
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
-                <Entypo name="air" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Fibre </Text>
-                <Text>{data.product.nutriscore_data.fiber} g</Text>
-              </View>
-            </View>
+            <FiberValueCard
+              icone={<Entypo name="air" size={30} color="#737373" />}
+              type={data.product.nutriscore_data.proteins}
+              name={"Fibre"}
+              measure={"g"}
+            />
           ) : (
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
-                <Entypo name="air" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Fibre </Text>
-                <Text>No data</Text>
-              </View>
-            </View>
+            <NoValueCard name={"Fibre"} />
           )}
+
           {data.product.nutriments?.energy_value ? (
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
-                <SimpleLineIcons name="drop" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Calories</Text>
-                <Text>{data.product.nutriments.energy_serving} kcal</Text>
-              </View>
-            </View>
+            <EnergyValueCard
+              icone={<SimpleLineIcons name="drop" size={30} color="#737373" />}
+              type={data.product.nutriments.energy_serving}
+              name={"Calories"}
+              measure={"kCal"}
+            />
           ) : (
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
-                <SimpleLineIcons name="drop" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Calories </Text>
-                <Text>No data</Text>
-              </View>
-            </View>
+            <NoValueCard name={"Calories"} />
           )}
           {data.product.nutriscore_data?.saturated_fat ? (
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
-                <Fontisto name="blood-drop" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Graisses saturée</Text>
-                <Text>{data.product.nutriscore_data.saturated_fat} g</Text>
-              </View>
-            </View>
+            <FatValueCard
+              icone={<Fontisto name="blood-drop" size={30} color="#737373" />}
+              type={data.product.nutriscore_data.saturated_fat}
+              name={"Graisses saturées"}
+              measure={"g"}
+            />
           ) : (
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
-                <Fontisto name="blood-drop" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Graisse saturée </Text>
-                <Text>No data</Text>
-              </View>
-            </View>
+            <NoValueCard name={"Graisses saturées"} />
           )}
           {data.product.nutriscore_data?.sugars ? (
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
+            <SugarValueCard
+              icone={
                 <FontAwesome5 name="candy-cane" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Sucres </Text>
-                <Text> {data.product.nutriscore_data.sugars} g</Text>
-              </View>
-            </View>
+              }
+              type={data.product.nutriscore_data.sugars}
+              name={"Sucres"}
+              measure={"g"}
+            />
           ) : (
-            <View style={styles.nutriDiv}>
-              <View style={styles.iconeProduct}>
-                <FontAwesome5 name="candy-cane" size={30} color="#737373" />
-              </View>
-              <View style={styles.nutriInfo}>
-                <Text style={styles.categ}>Sucres </Text>
-                <Text>No data</Text>
-              </View>
-            </View>
+            <NoValueCard name={"Sucres"} />
           )}
           <TouchableOpacity onPress={addToFavorites}>
             <View style={styles.addFavorites}>
